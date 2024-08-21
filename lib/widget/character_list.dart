@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../models/character.dart';
 
@@ -18,8 +20,10 @@ class CharacterList extends StatefulWidget {
   _CharacterListState createState() => _CharacterListState();
 }
 
-class _CharacterListState extends State<CharacterList> {
+class _CharacterListState extends State<CharacterList>
+    with AutomaticKeepAliveClientMixin<CharacterList> {
   final ScrollController _scrollController = ScrollController();
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -27,23 +31,32 @@ class _CharacterListState extends State<CharacterList> {
     _scrollController.addListener(_onScroll);
   }
 
+  @override
+  bool get wantKeepAlive => true;
+
   void _onScroll() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      if (widget.hasMore) {
-        widget.onLoadMore();
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        if (widget.hasMore) {
+          widget.onLoadMore();
+        }
       }
-    }
+    });
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return CustomScrollView(
       controller: _scrollController,
       slivers: [
@@ -62,14 +75,20 @@ class _CharacterListState extends State<CharacterList> {
                   return _buildLoadingIndicator();
                 }
                 final character = widget.characters[index];
-                return GestureDetector(
-                  onTap: () => widget.onCharacterTap(character),
-                  child: GridTile(
-                    child: Image.network(character.imageUrl, fit: BoxFit.cover),
-                    footer: GridTileBar(
-                      backgroundColor: Colors.black54,
-                      title: Text(character.name),
-                      subtitle: Text(character.species),
+                return RepaintBoundary(
+                  child: GestureDetector(
+                    onTap: () => widget.onCharacterTap(character),
+                    child: GridTile(
+                      child: AspectRatio(
+                        aspectRatio: 2 / 3,
+                        child: Image.network(character.imageUrl,
+                            fit: BoxFit.cover),
+                      ),
+                      footer: GridTileBar(
+                        backgroundColor: Colors.black54,
+                        title: Text(character.name),
+                        subtitle: Text(character.species),
+                      ),
                     ),
                   ),
                 );
