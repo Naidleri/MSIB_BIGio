@@ -10,17 +10,35 @@ class CharacterProvider with ChangeNotifier {
   List<Character> _characters = [];
   bool _isLoading = false;
   String? _error;
+  int _currentPage = 1;
+  bool _hasMore = true;
 
   List<Character> get characters => _characters;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  bool get hasMore => _hasMore;
 
-  Future<void> fetchCharacters() async {
+  Future<void> fetchCharacters({bool loadMore = false}) async {
+    if (_isLoading) return;
+
     _isLoading = true;
     notifyListeners();
 
+    if (!loadMore) {
+      _characters.clear();
+      _currentPage = 1;
+      _hasMore = true;
+    }
+
     try {
-      _characters = await apiService.fetchCharacters();
+      final newCharacters =
+          await apiService.fetchCharacters(page: _currentPage);
+      if (newCharacters.isEmpty) {
+        _hasMore = false;
+      } else {
+        _characters.addAll(newCharacters);
+        _currentPage++;
+      }
       _error = null;
     } catch (e) {
       _error = e.toString();

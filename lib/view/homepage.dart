@@ -58,6 +58,8 @@ class _HomePageState extends State<HomePage> {
               onCharacterTap: (character) {
                 Navigator.pushNamed(context, '/detail', arguments: character);
               },
+              onLoadMore: () => provider.fetchCharacters(loadMore: true),
+              hasMore: provider.hasMore,
             );
           }
         },

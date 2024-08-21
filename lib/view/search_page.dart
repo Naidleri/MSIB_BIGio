@@ -45,10 +45,12 @@ class CharacterSearchDelegate extends SearchDelegate {
           return Center(child: Text('Karakter tidak ditmkan'));
         } else {
           return CharacterList(
-            characters: provider.characters,
-            onCharacterTap: (character) {
-              Navigator.pushNamed(context, '/detail', arguments: character);
-            },
+             characters: provider.characters,
+              onCharacterTap: (character) {
+                Navigator.pushNamed(context, '/detail', arguments: character);
+              },
+              onLoadMore: () => provider.fetchCharacters(loadMore: true),
+              hasMore: provider.hasMore,
           );
         }
       },
