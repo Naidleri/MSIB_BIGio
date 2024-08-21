@@ -30,5 +30,18 @@ class CharacterProvider with ChangeNotifier {
     }
   }
 
-  
+  Future<void> searchCharacters(String query) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      _characters = await apiService.searchCharacters(query);
+      _error = null;
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }

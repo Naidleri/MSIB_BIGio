@@ -24,5 +24,14 @@ class RickAndMortyApi {
     }
   }
 
-  
+  Future<List<Character>> searchCharacters(String query) async {
+    final response =
+        await http.get(Uri.parse('$baseUrl/character/?name=$query'));
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body)['results'];
+      return data.map((json) => Character.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to search characters');
+    }
+  }
 }

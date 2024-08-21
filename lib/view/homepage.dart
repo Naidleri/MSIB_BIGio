@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:msibbigio/view/search_page.dart';
 import 'package:msibbigio/widget/character_list.dart';
 import 'package:provider/provider.dart';
 import '../providers/character_provider.dart';
@@ -20,17 +21,26 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final characterProvider = Provider.of<CharacterProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Rick and Morty Characters'),
         actions: [
           IconButton(
             icon: Icon(Icons.search),
-            onPressed: () {},
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: CharacterSearchDelegate(characterProvider),
+              );
+            },
           ),
           IconButton(
             icon: Icon(Icons.favorite),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, '/favorites');
+            },
           ),
         ],
       ),
@@ -41,7 +51,7 @@ class _HomePageState extends State<HomePage> {
           } else if (provider.error != null) {
             return Center(child: Text('Error: ${provider.error}'));
           } else if (provider.characters.isEmpty) {
-            return Center(child: Text('No characters found.'));
+            return Center(child: Text('Karakter tidak ditemukan'));
           } else {
             return CharacterList(
               characters: provider.characters,
