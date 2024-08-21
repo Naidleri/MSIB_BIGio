@@ -17,6 +17,7 @@ class CharacterProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
   bool get hasMore => _hasMore;
+  String _searchQuery = '';
 
   Future<void> fetchCharacters({bool loadMore = false}) async {
     if (_isLoading) return;
@@ -48,18 +49,19 @@ class CharacterProvider with ChangeNotifier {
     }
   }
 
-  Future<void> searchCharacters(String query) async {
-    _isLoading = true;
-    notifyListeners();
-
-    try {
-      _characters = await apiService.searchCharacters(query);
-      _error = null;
-    } catch (e) {
-      _error = e.toString();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+  void searchCharacters(String query) {
+    _searchQuery = query;
+    if (query.isEmpty) {
+      fetchCharacters(); 
+    } else {
+      _characters = _characters.where((character) =>
+        character.name.toLowerCase().contains(query.toLowerCase())).toList();
     }
+    notifyListeners();
+  }
+
+  void clearSearch() {
+    _searchQuery = '';
+    fetchCharacters(); 
   }
 }
