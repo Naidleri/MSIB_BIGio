@@ -23,9 +23,25 @@ class Character {
       name: json['name'],
       species: json['species'],
       gender: json['gender'],
-      originName: json['origin']['name'],
-      locationName: json['location']['name'],
+      originName: json['origin']['name'] ?? 'Unknown',
+      locationName: json['location']['name'] ?? 'Unknown',
       imageUrl: json['image'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'species': species,
+      'gender': gender,
+      'origin': {
+        'name': originName,
+      },
+      'location': {
+        'name': locationName,
+      },
+      'image': imageUrl,
+    };
   }
 }
