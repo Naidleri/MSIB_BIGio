@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:msibbigio/widget/character_detail.dart';
 import 'package:provider/provider.dart';
 import '../models/character.dart';
+import '../providers/favorite_provider.dart';
+import '../widget/character_detail.dart';
 
 class CharacterDetailPage extends StatelessWidget {
   @override
@@ -12,9 +13,25 @@ class CharacterDetailPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(character.name),
         actions: [
-          IconButton(
-            icon: Icon(Icons.favorite),
-            onPressed: () async {},
+          Consumer<FavoriteProvider>(
+            builder: (context, favoriteProvider, child) {
+              final isFavorite =
+                  favoriteProvider.favorites.any((c) => c.id == character.id);
+
+              return IconButton(
+                icon: Icon(
+                  isFavorite ? Icons.favorite : Icons.favorite_border,
+                  color: isFavorite ? Colors.red : Colors.grey,
+                ),
+                onPressed: () async {
+                  if (isFavorite) {
+                    await favoriteProvider.removeFavorite(character.id);
+                  } else {
+                    await favoriteProvider.addFavorite(character);
+                  }
+                },
+              );
+            },
           ),
         ],
       ),
