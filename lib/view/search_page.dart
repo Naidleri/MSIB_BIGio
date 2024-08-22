@@ -16,7 +16,11 @@ class CharacterSearchDelegate extends SearchDelegate {
     return [
       IconButton(
         icon: Icon(Icons.clear),
-        onPressed: () => query = '',
+        onPressed: () {
+          query = '';
+          characterProvider.clearSearch();
+          showSuggestions(context);
+        },
       ),
     ];
   }
@@ -42,13 +46,15 @@ class CharacterSearchDelegate extends SearchDelegate {
         } else if (provider.error != null) {
           return Center(child: Text('Error: ${provider.error}'));
         } else if (provider.characters.isEmpty) {
-          return Center(child: Text('Karakter tidak ditmkan'));
+          return Center(child: Text('Karakter tidak ditemukan'));
         } else {
           return CharacterList(
             characters: provider.characters,
             onCharacterTap: (character) {
               Navigator.pushNamed(context, '/detail', arguments: character);
             },
+            onLoadMore: () => provider.fetchCharacters(loadMore: true),
+            hasMore: provider.hasMore,
           );
         }
       },

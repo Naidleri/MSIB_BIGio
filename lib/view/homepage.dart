@@ -13,7 +13,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<CharacterProvider>(context, listen: false).fetchCharacters();
     });
@@ -39,14 +38,18 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: Icon(Icons.favorite),
             onPressed: () {
-              Navigator.pushNamed(context, '/favorites');
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/favorites',
+                (Route<dynamic> route) => false,
+              );
             },
           ),
         ],
       ),
       body: Consumer<CharacterProvider>(
         builder: (context, provider, child) {
-          if (provider.isLoading) {
+          if (provider.isLoading && provider.characters.isEmpty) {
             return Center(child: CircularProgressIndicator());
           } else if (provider.error != null) {
             return Center(child: Text('Error: ${provider.error}'));
@@ -56,8 +59,19 @@ class _HomePageState extends State<HomePage> {
             return CharacterList(
               characters: provider.characters,
               onCharacterTap: (character) {
-                Navigator.pushNamed(context, '/detail', arguments: character);
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/detail',
+                  ModalRoute.withName('/'),
+                  arguments: character,
+                );
               },
+              onLoadMore: () {
+                if (!provider.isLoading && provider.hasMore) {
+                  provider.fetchCharacters(loadMore: true);
+                }
+              },
+              hasMore: provider.hasMore,
             );
           }
         },
