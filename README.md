@@ -1,16 +1,36 @@
-# msibbigio
+# Aplikasi Flutter Rick and Morty
 
-A new Flutter project.
+Aplikasi ini adalah proyek Flutter yang dipakai untuk pengguna untuk melihat, mencari, dan mengelola karakter favorit dari serial Rick and Morty. Aplikasi ini terintegrasi dengan API Rick and Morty
 
-## Getting Started
+## Table of Contents
 
-This project is a starting point for a Flutter application.
+[Features](#features)
+[Project Structure](#project-structure)
+[Libraries](#libraries)
+[Apk Link](#apk-link)
 
-A few resources to get you started if this is your first Flutter project:
+## Features
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Fitur dari aplikasi ini
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Melihat daftar character rick and morty
+- Melihat detail dari character rick and morty
+- Menambah character favorite rick and morty
+
+## Project Structure
+
+- models
+- providers
+- services
+- views
+- widgets
+
+## Libraries
+
+- provider
+- http
+- mockito
+
+## Apk Link
+
+https://drive.google.com/file/d/1UfYKirqLbUR-GFrXGZEHhbW0hjENUp1U/view?usp=drive_link

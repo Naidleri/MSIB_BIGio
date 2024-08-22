@@ -35,16 +35,6 @@ class _HomePageState extends State<HomePage> {
               );
             },
           ),
-          IconButton(
-            icon: Icon(Icons.favorite),
-            onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                '/favorites',
-                (Route<dynamic> route) => false,
-              );
-            },
-          ),
         ],
       ),
       body: Consumer<CharacterProvider>(
