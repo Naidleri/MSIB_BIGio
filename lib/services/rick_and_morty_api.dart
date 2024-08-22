@@ -3,12 +3,13 @@ import 'dart:convert';
 import '../models/character.dart';
 
 class RickAndMortyApi {
+  final http.Client client;
   static const String baseUrl = 'https://rickandmortyapi.com/api';
 
+  RickAndMortyApi({required this.client});
+
   Future<List<Character>> fetchCharacters({int page = 1}) async {
-    final response = await http.get(Uri.parse('$baseUrl/character?page=$page'));
-
-
+    final response = await client.get(Uri.parse('$baseUrl/character?page=$page'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
@@ -25,7 +26,7 @@ class RickAndMortyApi {
   }
 
   Future<Character> fetchCharacterById(int id) async {
-    final response = await http.get(Uri.parse('$baseUrl/character/$id'));
+    final response = await client.get(Uri.parse('$baseUrl/character/$id'));
     if (response.statusCode == 200) {
       return Character.fromJson(jsonDecode(response.body));
     } else {
@@ -35,7 +36,7 @@ class RickAndMortyApi {
 
   Future<List<Character>> searchCharacters(String query) async {
     final response =
-        await http.get(Uri.parse('$baseUrl/character/?name=$query'));
+        await client.get(Uri.parse('$baseUrl/character/?name=$query'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
